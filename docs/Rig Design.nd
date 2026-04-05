@@ -1,0 +1,177 @@
+# Rig Design & Dimensions
+
+## Design Philosophy
+
+The rig uses a T-shaped carbon fiber skeleton with a vertical round-tube handle and two horizontal square-tube arms extending to the flanking cameras. 3D printed mounts in ASA sleeve over the CF tubes. The Livox Horizon mounts on top of the center junction, centered over the camera array.
+
+The square tube arms prevent rotation of sleeved camera mounts — a camera cannot twist out of calibration alignment without a fastener, because the square bore mechanically indexes it. The round tube handle allows comfortable ergonomic grip.
+
+---
+
+## Sensor Arrangement
+
+### Front View
+
+```
+         [ Livox Horizon ]
+                |
+           [bracket]
+ __________|________|__________
+|  OV9281 | D435i | FLIR | OV9281 |   ← camera rail
+|_________|_______|______|________|
+               |
+            [handle]
+```
+
+### Top-Down View (forward = up)
+
+```
+         ↑ toward subject
+
+    ╔══ 81.7° Livox FOV ══╗
+    
+    ┌──── Livox Horizon ────┐
+    ┌──┬─────────┬────┬──┐
+    │OV│  D435i  │FLIR│OV│   ← camera bar
+    └──┴─────────┴────┴──┘
+    ←——— ≈ 26cm baseline ———→
+              │
+           [handle]
+```
+
+### Sensor Positions (from center, horizontal axis)
+
+| Sensor | Position | Notes |
+|---|---|---|
+| Livox Horizon | Center, top | Centered over camera array |
+| RealSense D435i | Left of center | Minimize IMU lever arm to Livox |
+| FLIR BFS-U3-120S4C | Right of center | Primary COLMAP anchor |
+| OV9281 (left) | Far left | ~13cm from center |
+| OV9281 (right) | Far right | ~13cm from center |
+
+OV9281 flanking cameras should be toed in 5–10° toward center so both share overlapping coverage rather than diverging.
+
+---
+
+## Carbon Fiber Structure
+
+### Tube Specifications
+
+| Tube | Section | OD | ID | Wall | Length | Use |
+|---|---|---|---|---|---|---|
+| Round | Circular | 12mm | 10mm | 1mm | ~200mm | Vertical handle |
+| Square | Square | 12mm | 10mm | 1mm | ~150mm each | Horizontal camera arms (×2) |
+
+### Wall Thickness Note
+
+1mm wall is adequate for the short arm lengths in this design (~130–150mm per side). Deflection scales with the cube of length — short arms at 1mm wall are significantly stiffer than a single long bar would be. If flex is observed during testing, upgrade to 2mm wall tube; all printed sleeve bores would remain the same OD.
+
+---
+
+## Printed Parts
+
+All structural and bonded parts should be printed in **ASA**. PLA is acceptable for test/prototype prints only — PLA has poor epoxy adhesion and a heat distortion temperature too low for a tool left in a car or near lights.
+
+### Recommended Print Settings (ASA)
+
+- Layer height: 0.2mm
+- Wall count: 4 minimum for structural parts
+- Infill: 40%+ for load-bearing parts, gyroid pattern
+- Print temp: 240–250°C (tune per filament brand)
+- Bed temp: 90–100°C
+- Enclosure: Required for ASA — open-air prints warp
+- Cooling: Minimal (20–30% max)
+
+### Parts List
+
+| Part | Material | Notes |
+|---|---|---|
+| Center hub | ASA | Three bores: 2× square (arms), 1× round (handle). Epoxy bonded. |
+| Livox bracket | ASA | Bolts to Livox mounting holes (M4), sleeves over center hub top |
+| OV9281 split clamp (×2) | ASA | Clamps over square arm tube. Adjustable, no holes in CF. |
+| FLIR mount | ASA | Fixed epoxy bond to center hub region. 1/4"-20 or M4 mounting. |
+| D435i mount | ASA | Fixed epoxy bond. Uses D435i 1/4"-20 tripod socket. |
+| Cable management clips | ASA | Run along arms, zip tie or friction fit |
+| Internal bore plug (optional) | PETG or ASA | For any through-hole fastener locations — distributes load |
+
+### Split Clamp Design Notes
+
+The OV9281 flanking camera mounts use a split clamp approach — no holes drilled in CF:
+
+- Two-piece clamp with a vertical split
+- Clamping bolt pulls halves together perpendicular to tube axis
+- M3 heat-set nut-serts in the printed clamp half
+- Camera mounts to the clamp face with M3 screws into nut-serts
+- Allows sliding and rotation for calibration, then locks in place
+- Toe-in angle (5–10°) can be set at this clamp face
+
+---
+
+## Center Hub Design Requirements
+
+The center hub is the highest-stress part in the rig. Design requirements:
+
+- Square arm bores should accept the CF tube to a depth of **30mm minimum** on each side (longer engagement = higher pull-out and bending resistance)
+- Round handle bore should accept the round CF tube to a depth of **30mm minimum** from the bottom
+- Gusset or fillet features between the vertical bore and horizontal bores — even a 5mm printed fillet significantly increases bending resistance at the junction
+- Clearance for cable routing through or around the hub
+- All three bores are epoxy-bonded — design for a **slip fit** (0.1–0.2mm clearance), not interference
+
+---
+
+## Adhesive Bonding Procedure
+
+### Materials
+
+- Loctite EA 9492 or 3M DP420 (two-part structural epoxy)
+- 220 grit sandpaper
+- Isopropyl alcohol (99%)
+- N95 respirator (CF dust)
+- Nitrile gloves
+
+### Procedure
+
+1. Dry fit all parts — mark insertion depth with tape
+2. Scuff all CF bonding surfaces with 220 grit
+3. Wipe all bonding surfaces (CF and printed) with IPA — allow to fully dry (2 min)
+4. Mix epoxy per manufacturer instructions
+5. Apply epoxy to bore inner surface (not the tube — smears on insertion)
+6. Insert tube, rotate slightly to distribute epoxy
+7. Align carefully — you have 20–30 minutes working time
+8. Clamp or tape, leave undisturbed for 24 hours before handling
+9. Full cure is typically 72 hours — do not apply load-bearing stress before full cure
+
+### Joint Priority
+
+| Joint | Method | Reason |
+|---|---|---|
+| Center hub → handle tube | Epoxy | Permanent, highest load |
+| Center hub → square arms | Epoxy | Permanent, bending load |
+| Livox bracket → hub | Bolted (M4) | Removable for transport |
+| OV9281 mounts | Split clamp | Adjustable for calibration |
+| FLIR mount | Epoxy + M4 bolt | Fixed, primary camera |
+| D435i mount | Epoxy + 1/4"-20 | Fixed, pre-calibrated IMU |
+
+---
+
+## Wiring & Cable Management
+
+- All sensors connect to a powered 7-port USB 3.0 hub mounted on or near the handle
+- Hub connects to workstation via a single USB-C or USB-A cable
+- Livox Horizon connects via Ethernet to workstation (or a USB3 Ethernet adapter on hub)
+- ESP32 sync controller connects via USB to hub, GPIO outputs fan out to FLIR and OV9281 hardware trigger pins
+- Route cables along the arms in printed cable clips — keep camera cables from hanging loose to avoid them entering frame
+- Twist or braid multi-conductor runs where possible to reduce EMI
+
+### Sync Architecture
+
+```
+ESP32 GPIO → fan-out → FLIR hardware trigger pin
+                    → OV9281 L hardware trigger pin
+                    → OV9281 R hardware trigger pin
+
+D435i → self-triggered (IMU + depth run independently)
+Livox → self-triggered (continuous scan)
+```
+
+Sync pulse generated by ESP32 at target framerate (15–20fps). All triggered cameras fire within microseconds of each other.
